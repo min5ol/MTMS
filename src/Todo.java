@@ -2,20 +2,26 @@ import java.time.LocalDateTime;
 
 public class Todo
 {
-    private Long id;
-    private String title;
-    private Boolean completed;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Long id; // 고유 식별자
+    private String title; // 할 일
+    private Boolean completed; // 완료 여부
+    private LocalDateTime createdAt; // 생성 시각
+    private LocalDateTime updatedAt; // 마지막 수정 시각
 
+    // 생성자
+    public Todo(Long id, String title)
+    {
+        this.id = id;
+        this.title = title;
+        this.completed = false;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    // getter
     public Long getId()
     {
         return id;
-    }
-
-    public void setId(Long id)
-    {
-        this.id = id;
     }
 
     public String getTitle()
@@ -23,19 +29,9 @@ public class Todo
         return title;
     }
 
-    public void setTitle(String title)
-    {
-        this.title = title;
-    }
-
     public Boolean getCompleted()
     {
         return completed;
-    }
-
-    public void setCompleted(Boolean completed)
-    {
-        this.completed = completed;
     }
 
     public LocalDateTime getCreatedAt()
@@ -43,30 +39,29 @@ public class Todo
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt)
-    {
-        this.createdAt = createdAt;
-    }
-
     public LocalDateTime getUpdatedAt()
     {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt)
+    // 제목 수정 + 시각
+    public void setTitle(String title)
     {
-        this.updatedAt = updatedAt;
+        this.title = title;
+        this.updatedAt = LocalDateTime.now();
     }
 
+    // 완료 여부 전환 메서드 true <-> false
+    public void updateCompleted()
+    {
+        this.completed = !this.completed;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    // toString
     @Override
     public String toString()
     {
-        return "Todo{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", completed=" + completed +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
+        return "[" + id + "]" + (completed ? "[완료]" : "[미완료]") + title + "(생성 : " + createdAt + " 수정 : " + updatedAt + ")";
     }
 }
