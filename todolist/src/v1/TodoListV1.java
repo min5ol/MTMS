@@ -1,16 +1,19 @@
+package v1;
+
+import domain.Todo;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class TodoList
+public class TodoListV1
 {
     private ArrayList<Todo> todos = new ArrayList<>();
-    private Long idCounter = 1L;
 
     // 추가
     public void create(String title)
     {
-        todos.add(new Todo(idCounter++, title));
+        todos.add(new Todo(title));
     }
 
     // id를 통해 할일 찾기, null 허용
@@ -87,7 +90,7 @@ public class TodoList
     public static void main(String[] args)
     {
         Scanner sc = new Scanner(System.in);
-        TodoList todoList = new TodoList();
+        TodoListV1 todoList = new TodoListV1();
 
         while(true)
         {
