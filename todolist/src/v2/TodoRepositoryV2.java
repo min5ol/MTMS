@@ -5,7 +5,7 @@ import domain.Todo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TodoRepository
+public class TodoRepositoryV2
 {
     // List는 인터페이스, ArrayList는 구현체
     // 유연한 코드 작성을 위해 List로 선언, 순차적 저장에 적합한 ArrayList로 초기화

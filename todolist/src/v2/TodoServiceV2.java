@@ -4,12 +4,12 @@ import domain.Todo;
 
 import java.util.List;
 
-public class TodoService
+public class TodoServiceV2
 {
-    private final TodoRepository repo;
+    private final TodoRepositoryV2 repo;
 
     // 생성자 주입을 통해 repo 구현체와의 결합도 낮춤
-    public TodoService(TodoRepository repo)
+    public TodoServiceV2(TodoRepositoryV2 repo)
     {
         this.repo = repo;
     }

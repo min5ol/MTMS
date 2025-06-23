@@ -1,35 +1,42 @@
-package v2;
+package v3;
 
 import domain.Todo;
+import v3.dto.CreateRequestDto;
+import v3.dto.TodoResponseDto;
+import v3.dto.UpdateRequestDto;
+import v3.repository.TodoMemoryRepository;
+import v3.repository.TodoRepository;
+import v3.service.TodoService;
+import v3.service.TodoServiceImpl;
+
 import java.util.List;
 import java.util.Scanner;
 
-public class TodoListV2
+public class TodoListV3
 {
-    private final TodoServiceV2 service;
+    private final TodoService service;
     private final Scanner sc = new Scanner(System.in);
 
-    public TodoListV2(TodoServiceV2 service)
+    public TodoListV3(TodoService service)
     {
         this.service = service;
     }
 
-    // 보조 메서드: 사용자 입력 → 공백 제거 + 숫자 변환
-    private int inputInt(String message)
+    private int inputInt(String msg)
     {
-        System.out.print(message);
+        System.out.println(msg);
         return Integer.parseInt(sc.nextLine().trim());
     }
 
-    private Long inputLong(String message)
+    private Long inputLong(String msg)
     {
-        System.out.print(message);
+        System.out.println(msg);
         return Long.parseLong(sc.nextLine().trim());
     }
 
-    private String inputLine(String message)
+    private String inputLine(String msg)
     {
-        System.out.print(message);
+        System.out.println(msg);
         return sc.nextLine().trim();
     }
 
@@ -40,20 +47,14 @@ public class TodoListV2
 
         if(answer.equalsIgnoreCase("y"))
         {
-            service.save(title);
+            CreateRequestDto dto = new CreateRequestDto(title);
+            service.save(dto);
             System.out.println("등록 완료");
         }
         else
         {
             System.out.println("등록 취소");
         }
-    }
-
-    private void readOne()
-    {
-        Long id = inputLong("조회할 ID: ");
-        Todo todo = service.findById(id);
-        System.out.println(todo);
     }
 
     private void updateStatus()
@@ -63,7 +64,8 @@ public class TodoListV2
 
         if(answer.equalsIgnoreCase("y"))
         {
-            service.updateStatus(id);
+            UpdateRequestDto dto = new UpdateRequestDto(id);
+            service.toggleComplete(dto);
             System.out.println("상태 변경 완료");
         }
         else
@@ -72,23 +74,30 @@ public class TodoListV2
         }
     }
 
+    private void readOne()
+    {
+        Long id = inputLong("조회할 ID: ");
+        TodoResponseDto dto = service.findById(id);
+        System.out.println(dto);
+    }
+
     private void readAll()
     {
-        List<Todo> todos = service.findAll();
-        if(todos.isEmpty())
+        List<TodoResponseDto> dto = service.readAll();
+        if(dto.isEmpty())
         {
             System.out.println("할 일이 존재하지 않습니다.");
         }
         else
         {
-            todos.forEach(System.out::println);
+            dto.forEach(System.out::println);
         }
     }
 
     private void delete()
     {
         Long id = inputLong("삭제할 ID: ");
-        Todo todo = service.findById(id);
+        TodoResponseDto dto = service.findById(id);
         String answer = inputLine("ID [" + id + "]의 할 일을 삭제하시겠습니까? [y/n]");
 
         if(answer.equalsIgnoreCase("y"))
@@ -100,6 +109,17 @@ public class TodoListV2
         {
             System.out.println("삭제 취소");
         }
+    }
+
+    public void printMenu()
+    {
+        System.out.println("\n ===== TODO List =====");
+        System.out.println("1. 할 일 등록");
+        System.out.println("2. 할 일 조회");
+        System.out.println("3. 상태 변경");
+        System.out.println("4. 전체 목록 조회");
+        System.out.println("5. 삭제");
+        System.out.println("0. 종료");
     }
 
     public void run()
@@ -118,7 +138,8 @@ public class TodoListV2
                     case 3 -> updateStatus();
                     case 4 -> readAll();
                     case 5 -> delete();
-                    case 0 -> {
+                    case 0 ->
+                    {
                         System.out.println("프로그램 종료");
                         return;
                     }
@@ -132,22 +153,11 @@ public class TodoListV2
         }
     }
 
-    public void printMenu()
-    {
-        System.out.println("\n ===== TODO List =====");
-        System.out.println("1. 할 일 등록");
-        System.out.println("2. 할 일 조회");
-        System.out.println("3. 상태 변경");
-        System.out.println("4. 전체 목록 조회");
-        System.out.println("5. 삭제");
-        System.out.println("0. 종료");
-    }
-
     public static void main(String[] args)
     {
-        TodoRepositoryV2 repo = new TodoRepositoryV2();
-        TodoServiceV2 service = new TodoServiceV2(repo);
-        TodoListV2 list = new TodoListV2(service);
+        TodoRepository repo = new TodoMemoryRepository();
+        TodoService service = new TodoServiceImpl(repo);
+        TodoListV3 list = new TodoListV3(service);
         list.run();
     }
 }
